@@ -2,10 +2,10 @@ package com.jmquinones.newsappcompose.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jmquinones.newsapp.models.Source
 import java.io.Serializable
 
 @Entity(tableName = "articles")
+@kotlinx.serialization.Serializable
 data class Article(
     @PrimaryKey(autoGenerate = true)
     var id: Int?,

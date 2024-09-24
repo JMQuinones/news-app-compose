@@ -13,4 +13,4 @@ object SavedNewsScreen
 object SearchNewsScreen
 
 @Serializable
-data class NewsDetail(val url: String)
+data class NewsDetail(val article: Article)
