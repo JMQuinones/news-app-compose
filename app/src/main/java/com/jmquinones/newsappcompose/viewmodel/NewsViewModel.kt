@@ -26,8 +26,8 @@ class NewsViewModel @Inject constructor(
     private val _breakingNews = mutableStateOf<List<Article>>(emptyList())
     val breakingNews: State<List<Article>> = _breakingNews
 
-    private val _savedNews = mutableStateOf<List<Article>>(emptyList())
-    val savedNews: State<List<Article>> = _savedNews
+    private val _savedArticles = mutableStateOf<List<Article>>(emptyList())
+    val savedArticles: State<List<Article>> = _savedArticles
 
     var currentPage by mutableIntStateOf(1)
 
@@ -52,7 +52,7 @@ class NewsViewModel @Inject constructor(
 
     fun loadSavedArticles(){
         viewModelScope.launch(Dispatchers.IO) {
-            _savedNews.value = articleDao.getAllArticles()
+            _savedArticles.value = articleDao.getAllArticles()
         }
     }
 

@@ -24,6 +24,7 @@ import com.jmquinones.newsappcompose.data.models.Source
 import com.jmquinones.newsappcompose.ui.components.newsdetailwebview.NewsDetailWebView
 import com.jmquinones.newsappcompose.ui.components.bottomnavbar.BottomNavBar
 import com.jmquinones.newsappcompose.ui.components.breakingnews.BreakingNews
+import com.jmquinones.newsappcompose.ui.components.savedarticles.SavedArticles
 import com.jmquinones.newsappcompose.ui.navigation.AllNewsScreen
 import com.jmquinones.newsappcompose.ui.navigation.ArticleNavType
 import com.jmquinones.newsappcompose.ui.navigation.NewsDetail
@@ -74,7 +75,12 @@ fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                     modifier = Modifier.padding(innerPadding),
                 )
             }
-            composable<SavedNewsScreen> { Text(text = "Saved news") }
+            composable<SavedNewsScreen> {
+                SavedArticles(
+                    navController = navController,
+                    modifier = Modifier.padding(innerPadding),
+                )
+            }
             composable<SearchNewsScreen> { Text(text = "Search News") }
             composable<NewsDetail>(
                 typeMap = mapOf(
