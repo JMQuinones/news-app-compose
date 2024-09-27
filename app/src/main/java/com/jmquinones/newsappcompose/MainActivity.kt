@@ -73,6 +73,7 @@ fun MainScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                 BreakingNews(
                     navController = navController,
                     modifier = Modifier.padding(innerPadding),
+                    snackbarHostState = snackbarHostState
                 )
             }
             composable<SavedNewsScreen> {

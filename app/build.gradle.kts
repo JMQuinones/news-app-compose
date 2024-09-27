@@ -93,4 +93,7 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
+    // Paging
+    implementation(libs.pagingCompose)
+
 }

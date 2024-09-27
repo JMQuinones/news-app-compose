@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,11 +16,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,12 +33,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jmquinones.newsappcompose.R
 import com.jmquinones.newsappcompose.data.models.Article
 import com.jmquinones.newsappcompose.ui.navigation.NewsDetail
 import com.jmquinones.newsappcompose.viewmodel.NewsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun NewsList(
@@ -49,12 +56,80 @@ fun NewsList(
     LazyColumn(modifier = modifier.padding(16.dp)) {
         items(items) { item ->
             //NewsItem()
+
             NewsItem(article = item) {
                 navController.navigate(NewsDetail(item))
             }
         }
     }
 }
+
+@Composable
+fun NewsListPaged(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    viewModel: NewsViewModel = hiltViewModel(),
+    items: LazyPagingItems<Article>,
+    snackbarHostState: SnackbarHostState
+) {
+    /*val breakingNews by remember {
+        viewModel.breakingNews
+    }*/
+    val localCoroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    when {
+        items.loadState.refresh is LoadState.Loading && items.itemCount == 0 ->{
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(64.dp), color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        }
+        items.loadState.refresh is LoadState.NotLoading && items.itemCount == 0 -> {
+            LaunchedEffect(Unit) {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.no_articles)
+                )
+            }
+        }
+        items.loadState.hasError -> {
+            LaunchedEffect(Unit) {
+                snackbarHostState.showSnackbar(
+                    message = context.getString(R.string.error)
+                )
+            }
+        }
+        else -> {
+            LazyColumn(modifier = modifier.padding(16.dp)) {
+                items(items.itemCount) { items[it]?.let { article ->
+                    //NewsItem()
+                    NewsItem(article = article) {
+                        navController.navigate(NewsDetail(article))
+                    }
+                }
+                }
+            }
+            if (items.loadState.append is LoadState.Loading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(64.dp), color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+        }
+
+    }
+    /*LazyColumn(modifier = modifier.padding(16.dp)) {
+        items(items.itemCount) { items[it]?.let { article ->
+            //NewsItem()
+            NewsItem(article = article) {
+                navController.navigate(NewsDetail(article))
+            }
+        }
+        }
+    }*/
+}
+
 @Composable
 fun NewsItem(article: Article, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(

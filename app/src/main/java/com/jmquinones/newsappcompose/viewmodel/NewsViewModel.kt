@@ -12,8 +12,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.State
+import androidx.paging.PagingData
 import com.jmquinones.newsappcompose.data.db.ArticleDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
@@ -28,6 +30,8 @@ class NewsViewModel @Inject constructor(
 
     private val _savedArticles = mutableStateOf<List<Article>>(emptyList())
     val savedArticles: State<List<Article>> = _savedArticles
+
+    val breakingNewsPageFlow: Flow<PagingData<Article>> = newsRepository.getNewsPaged()
 
     var currentPage by mutableIntStateOf(1)
 
