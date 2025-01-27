@@ -1,5 +1,7 @@
 package com.jmquinones.newsappcompose.ui.components.newslist
 
+import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -39,7 +42,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.jmquinones.newsappcompose.R
 import com.jmquinones.newsappcompose.data.models.Article
+import com.jmquinones.newsappcompose.data.models.Source
 import com.jmquinones.newsappcompose.ui.navigation.NewsDetail
+import com.jmquinones.newsappcompose.ui.theme.NewsAppComposeTheme
 import com.jmquinones.newsappcompose.viewmodel.NewsViewModel
 import kotlinx.coroutines.launch
 
@@ -53,10 +58,9 @@ fun NewsList(
     /*val breakingNews by remember {
         viewModel.breakingNews
     }*/
-    LazyColumn(modifier = modifier.padding(16.dp)) {
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(80.dp),modifier = modifier.padding(16.dp)) {
         items(items) { item ->
             //NewsItem()
-
             NewsItem(article = item) {
                 navController.navigate(NewsDetail(item))
             }
@@ -78,13 +82,14 @@ fun NewsListPaged(
     val localCoroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     when {
-        items.loadState.refresh is LoadState.Loading && items.itemCount == 0 ->{
+        items.loadState.refresh is LoadState.Loading && items.itemCount == 0 -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(64.dp), color = MaterialTheme.colorScheme.secondary
                 )
             }
         }
+
         items.loadState.refresh is LoadState.NotLoading && items.itemCount == 0 -> {
             LaunchedEffect(Unit) {
                 snackbarHostState.showSnackbar(
@@ -92,21 +97,23 @@ fun NewsListPaged(
                 )
             }
         }
-        items.loadState.hasError -> {
+        /*items.loadState.hasError -> {
             LaunchedEffect(Unit) {
                 snackbarHostState.showSnackbar(
                     message = context.getString(R.string.error)
                 )
             }
-        }
+        }*/
+
         else -> {
             LazyColumn(modifier = modifier.padding(16.dp)) {
-                items(items.itemCount) { items[it]?.let { article ->
-                    //NewsItem()
-                    NewsItem(article = article) {
-                        navController.navigate(NewsDetail(article))
+                items(items.itemCount) {
+                    items[it]?.let { article ->
+                        //NewsItem()
+                        NewsItem(article = article) {
+                            navController.navigate(NewsDetail(article))
+                        }
                     }
-                }
                 }
             }
             if (items.loadState.append is LoadState.Loading) {
@@ -132,9 +139,10 @@ fun NewsListPaged(
 
 @Composable
 fun NewsItem(article: Article, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Spacer(modifier = Modifier.height(4.dp))
     Row(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
             .clickable { onClick() }) {
         AsyncImage(
@@ -183,5 +191,27 @@ fun NewsItem(article: Article, modifier: Modifier = Modifier, onClick: () -> Uni
             }
         }
 
+    }
+    Spacer(modifier = Modifier.height(4.dp))
+
+}
+
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewNewsItem() {
+    NewsAppComposeTheme {
+        NewsItem(
+            article = Article(
+                1,
+                "Jon Doe",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at gravida tortor.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at gravida tortor.",
+                "2024-09-19T18:00:00Z",
+                Source("1", "BBC"), "Lorem ipsum", "", ""
+
+            )
+        ) {
+
+        }
     }
 }

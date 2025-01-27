@@ -38,22 +38,3 @@ fun BreakingNews(
 
 
 
-@Preview
-@Composable
-private fun PreviewNewsItem() {
-    NewsAppComposeTheme {
-        NewsItem(
-            article = Article(
-                1,
-                "Jon Doe",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at gravida tortor.",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at gravida tortor.",
-                "2024-09-19T18:00:00Z",
-                Source("1", "BBC"), "Lorem ipsum", "", ""
-
-            )
-        ) {
-
-        }
-    }
-}

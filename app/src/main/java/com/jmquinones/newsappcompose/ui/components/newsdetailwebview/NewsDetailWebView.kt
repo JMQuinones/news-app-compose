@@ -5,10 +5,14 @@ import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -17,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,6 +45,7 @@ fun NewsDetailWebView(
     val localCoroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     Box(modifier = modifier.fillMaxSize()) {
+
         if (url.isNotEmpty()) {
             AndroidView(factory = {
                 WebView(it).apply {
@@ -68,6 +74,18 @@ fun NewsDetailWebView(
                     .padding(8.dp)
             ) {
                 Icon(imageVector = Icons.Filled.Favorite, contentDescription = null)
+            }
+            IconButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .size(128.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "back",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
             }
         } else {
             Text(
