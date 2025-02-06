@@ -10,9 +10,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 
 @Composable
-fun BottomNavBar(modifier: Modifier = Modifier) {
+fun BottomNavBar(navController: NavHostController, modifier: Modifier = Modifier) {
     val menuItems = listOf(BottomNavBarItem.Home, BottomNavBarItem.Saved, BottomNavBarItem.Search)
     var selectedIndex by remember {
         mutableIntStateOf(0)
@@ -24,6 +25,7 @@ fun BottomNavBar(modifier: Modifier = Modifier) {
                 onClick = {
                     selectedIndex = index
                     // TODO: Add navigation
+                    navController.navigate(item.route)
                 },
                 label = { Text(text = item.label) },
                 icon = {
